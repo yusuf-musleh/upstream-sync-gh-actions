@@ -18,6 +18,8 @@ jobs:
       FORK_RELEASE: "main"
 
     steps:
+      - name: Authenticate GitHub Cli
+        run: gh auth setup-git -h github.com
       - name: Clone Forked Repo
         # This automatically detects its a fork and adds a remote for upstream called `upstream`
         run: gh repo clone $FORK_REPO
