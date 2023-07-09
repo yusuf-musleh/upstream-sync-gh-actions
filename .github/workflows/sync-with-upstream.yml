@@ -31,7 +31,7 @@ jobs:
         run: >
           gh pr create
           --repo $FORK_REPO
-          --base ${{ 
+          --base $FORK_RELEASE
           --head $(git branch --show-current)
           --title "Sync Upstream $(date +'%Y-%m-%d')"
           --body "Syncing with Upstream"
