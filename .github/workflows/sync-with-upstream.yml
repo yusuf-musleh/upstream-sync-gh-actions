@@ -10,7 +10,6 @@ on:
 
 jobs:
   sync:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
@@ -19,8 +18,12 @@ jobs:
 #       UPSTREAM_REPO: git@github.com:tester-org-1/tester-repo.git  # TODO: do not hardcode
       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo
       FORK_RELEASE: "main"
+      DATE_TIME_STAMP: date +"%Y%m%d-%s"
 
     steps:
+      - name: Get and store current datetime stamp
+        id: current-datetime-stamp
+        run: echo "DATE_TIME_STAMP=date +'%Y%m%d-%s'" >> "$GITHUB_OUTPUT"
       - name: Configure git to use GitHub Cli for credentials
         run: gh auth setup-git -h github.com
       
@@ -34,14 +37,11 @@ jobs:
           repository: yusuf-musleh/tester-repo
           token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
       - name: Add Remote Upstream
-        run: git remote add upstream $UPSTREAM_REPO && git remote -v && git status
+        run: git remote add upstream $UPSTREAM_REPO
       - name: Fetch Latest from Upstream
         run: git fetch upstream
-
-#       - name: Fetch Latest from Upstream
-#         run: cd `echo $FORK_REPO | awk -F'/' '{print $NF}'` && git fetch upstream
       - name: Create a new branch off Upstream master
-        run: git checkout -b sync--$(date +"%Y-%m-%d") upstream/main
+        run: git checkout -b sync--${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/main
       - name: Push new branch to Fork
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
@@ -50,5 +50,5 @@ jobs:
           --repo $FORK_REPO
           --base $FORK_RELEASE
           --head $(git branch --show-current)
-          --title "Sync Upstream $(date +'%Y-%m-%d')"
+          --title "Sync Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
           --body "Syncing with Upstream"
