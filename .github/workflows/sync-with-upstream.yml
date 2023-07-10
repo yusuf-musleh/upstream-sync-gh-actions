@@ -36,7 +36,7 @@ jobs:
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
-        run: git checkout -b sync-$FORK_RELEASE-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/$UPSTREAM_MASTER
+        run: git checkout -b sync-$UPSTREAM_MASTER-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/$UPSTREAM_MASTER
       - name: Push new branch to Fork
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
