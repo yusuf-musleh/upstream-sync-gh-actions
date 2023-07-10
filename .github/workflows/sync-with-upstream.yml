@@ -34,7 +34,7 @@ jobs:
           repository: yusuf-musleh/tester-repo
           token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
       - name: Add Remote Upstream
-        run: git remote add upstream $UPSTREAM_REPO
+        run: git remote add upstream $UPSTREAM_REPO && git remote -v && git status
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
