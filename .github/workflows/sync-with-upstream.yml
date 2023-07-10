@@ -27,7 +27,7 @@ jobs:
       - name: Checkout Forked Repo
         uses: actions/checkout@v3
         with:
-          repository: $FORK_REPO
+          repository: ${{ env.FORK_REPO }}
           token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
       - name: Add Remote Upstream
         run: git remote add upstream $UPSTREAM_REPO
