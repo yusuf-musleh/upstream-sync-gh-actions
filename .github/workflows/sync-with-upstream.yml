@@ -21,8 +21,8 @@ jobs:
     steps:
 #       - name: Set GitHub CLI to use SSH for git
 #         run: gh config set git_protocol ssh --host github.com
-#       - name: Authenticate GitHub Cli
-#         run: gh auth setup-git -h github.com
+      - name: Configure git to use GitHub Cli for credentials
+        run: gh auth setup-git -h github.com
 #       - name: GitHub Cli Auth Status
 #         run: gh auth status
 #       - name: Clone Forked Repo
