@@ -45,5 +45,5 @@ jobs:
           --repo $FORK_REPO
           --base $FORK_RELEASE
           --head $(git branch --show-current)
-          --title "Sync Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
-          --body "Syncing with Upstream"
+          --title "Sync $FORK_RELEASE with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
+          --body "Syncing $FORK_RELEASE with Upstream"
