@@ -13,8 +13,9 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }} 
-      FORK_REPO: https://github.com/yusuf-musleh/tester-repo  # TODO: do not hardcode
-      UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
+      # The repos provided need to be in the {owner}/{repo} format
+      FORK_REPO: yusuf-musleh/tester-repo  # TODO: do not hardcode
+      UPSTREAM_REPO: tester-org-1/tester-repo  # TODO: do not hardcode
       FORK_RELEASE: "main"
       UPSTREAM_MASTER: "master"
 
