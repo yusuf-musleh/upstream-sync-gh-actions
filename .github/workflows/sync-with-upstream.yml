@@ -18,8 +18,8 @@ jobs:
       FORK_RELEASE: "main"
 
     steps:
-      - name: Set GitHub CLI to use SSH for git
-        run: gh config set git_protocol ssh --host github.com
+#       - name: Set GitHub CLI to use SSH for git
+#         run: gh config set git_protocol ssh --host github.com
       - name: Authenticate GitHub Cli
         run: gh auth setup-git -h github.com
       - name: GitHub Cli Auth Status
