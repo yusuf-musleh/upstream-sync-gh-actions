@@ -18,7 +18,6 @@ jobs:
 #       UPSTREAM_REPO: git@github.com:tester-org-1/tester-repo.git  # TODO: do not hardcode
       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo
       FORK_RELEASE: "main"
-      DATE_TIME_STAMP: date +"%Y%m%d-%s"
 
     steps:
       - name: Get and store current datetime stamp
