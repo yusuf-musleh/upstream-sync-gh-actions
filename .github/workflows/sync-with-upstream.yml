@@ -16,6 +16,7 @@ jobs:
       FORK_REPO: https://github.com/yusuf-musleh/tester-repo  # TODO: do not hardcode
       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
       FORK_RELEASE: "main"
+      UPSTREAM_MASTER: "master"
 
     steps:
       - name: Get and store current datetime stamp
@@ -33,7 +34,7 @@ jobs:
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
-        run: git checkout -b sync--${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/main
+        run: git checkout -b sync--${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/$UPSTREAM_MASTER
       - name: Push new branch to Fork
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
