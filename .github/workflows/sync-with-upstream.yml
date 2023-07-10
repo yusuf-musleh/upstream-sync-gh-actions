@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Get and store current datetime stamp
         id: current-datetime-stamp
-        run: echo "DATE_TIME_STAMP=date +'%Y%m%d-%s'" >> "$GITHUB_OUTPUT"
+        run: echo "DATE_TIME_STAMP=$(date +'%Y%m%d-%s')" >> "$GITHUB_OUTPUT"
       - name: Configure git to use GitHub Cli for credentials
         run: gh auth setup-git -h github.com
       
