@@ -17,7 +17,7 @@ jobs:
       FORK_REPO: yusuf-musleh/tester-repo  # TODO: do not hardcode
       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
       FORK_RELEASE: "main"
-      UPSTREAM_MASTER: "master"
+      UPSTREAM_MASTER: "main"
 
     steps:
       - name: Get and store current datetime stamp
