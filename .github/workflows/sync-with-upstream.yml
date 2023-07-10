@@ -14,8 +14,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
-      FORK_REPO: git@github.com:yusuf-musleh/tester-repo.git  # TODO: do not hardcode
-      UPSTREAM_REPO: git@github.com:tester-org-1/tester-repo.git  # TODO: do not hardcode
+#       FORK_REPO: git@github.com:yusuf-musleh/tester-repo.git  # TODO: do not hardcode
+      FORK_REPO: https://github.com/yusuf-musleh/tester-repo
+#       UPSTREAM_REPO: git@github.com:tester-org-1/tester-repo.git  # TODO: do not hardcode
+      UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo
       FORK_RELEASE: "main"
 
     steps:
@@ -25,16 +27,16 @@ jobs:
         run: gh auth setup-git -h github.com
 #       - name: GitHub Cli Auth Status
 #         run: gh auth status
-#       - name: Clone Forked Repo
-#         # This automatically detects its a fork and adds a remote for upstream called `upstream`
-#         run: gh repo clone $FORK_REPO
-      - name: Checkout Forked Repo
-        uses: actions/checkout@v3
-        with:
-          repository: yusuf-musleh/tester-repo
-          token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
-      - name: Add Remote Upstream
-        run: git remote add upstream $UPSTREAM_REPO && git remote -v && git status
+      - name: Clone Forked Repo
+        # This automatically detects its a fork and adds a remote for upstream called `upstream`
+        run: gh repo clone $FORK_REPO
+#       - name: Checkout Forked Repo
+#         uses: actions/checkout@v3
+#         with:
+#           repository: yusuf-musleh/tester-repo
+#           token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
+#       - name: Add Remote Upstream
+#         run: git remote add upstream $UPSTREAM_REPO && git remote -v && git status
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
