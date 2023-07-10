@@ -21,12 +21,8 @@ jobs:
       FORK_RELEASE: "main"
 
     steps:
-#       - name: Set GitHub CLI to use SSH for git
-#         run: gh config set git_protocol ssh --host github.com
       - name: Configure git to use GitHub Cli for credentials
         run: gh auth setup-git -h github.com
-#       - name: GitHub Cli Auth Status
-#         run: gh auth status
       - name: Clone Forked Repo
         # This automatically detects its a fork and adds a remote for upstream called `upstream`
         run: gh repo clone $FORK_REPO
@@ -38,7 +34,7 @@ jobs:
 #       - name: Add Remote Upstream
 #         run: git remote add upstream $UPSTREAM_REPO && git remote -v && git status
       - name: Fetch Latest from Upstream
-        run: git fetch upstream
+        run: cd `echo $FORK_REPO | awk -F'/' '{print $NF}'` && git fetch upstream
       - name: Create a new branch off Upstream master
         run: git checkout -b sync--$(date +"%Y-%m-%d") upstream/main
       - name: Push new branch to Fork
