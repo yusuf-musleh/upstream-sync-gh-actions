@@ -52,7 +52,7 @@ jobs:
       - name: Check for changes Upstream
         id: check-sync-required
 #         run: if [[ $(git log origin/${{ steps.sync-branch-outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
-        run: echo "SYNC_REQUIRED=$(git log origin/sync-main-20230712-1689160244 ^origin/open-release/cool.2 | grep .)" >> "$GITHUB_OUPUT"
+        run: echo "SYNC_REQUIRED=$(git log origin/${{ steps.sync-branch-outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | grep .)" >> "$GITHUB_OUPUT"
       - name: Push new branch to Fork
         if: ${{ steps.check-sync-required.SYNC_REQUIRED }}
         run: git push origin
