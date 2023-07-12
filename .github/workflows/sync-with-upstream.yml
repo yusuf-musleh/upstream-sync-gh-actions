@@ -51,11 +51,11 @@ jobs:
 
           ## Conflicts ⚠️ 
           
-          In cases of conflicts you can either go ahead and resolve it here on Github UIs if it is simple enough.
-          However if it is a more complicated conflict please follow the following steps:
+          In cases of conflicts you can go ahead and resolve it here on Github if it is simple enough.
+          However if it is a more complicated conflict please follow the steps below:
 
             1. Check out `sync-${{ env.UPSTREAM_MASTER }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` locally:
-            2. Pull latest changes from `$FORK_RELEASE` into that branch, make sure your `[REMOTE]` is pointing to this repo:
+            2. Pull latest changes from `${{ env.FORK_RELEASE }}` into that branch, make sure your `[REMOTE]` is pointing to this repo:
             ```sh
             git pull [REMOTE] ${{ env.FORK_RELEASE }}
             ```
