@@ -47,9 +47,10 @@ jobs:
           --head $(git branch --show-current)
           --title "Sync $FORK_RELEASE with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
           --body '
-          Syncing $FORK_RELEASE with Upstream
+          Syncing ${{ FORK_RELEASE }} with Upstream
 
           ## Conflicts ⚠️ 
+          
           In cases of conflicts you can either go ahead and resolve it here on Github UIs if it is simple enough.
           However if it is a more complicated conflict please follow the following steps:
 
