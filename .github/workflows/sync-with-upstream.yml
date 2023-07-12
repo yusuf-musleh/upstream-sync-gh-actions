@@ -10,14 +10,23 @@ on:
 
 jobs:
   sync:
+    strategy:
+      matrix:
+        include:
+          # The fork repo provided needs to be in the {owner}/{repo} format
+          - fork_repo: yusuf-musleh/tester-repo
+            fork_release: open-release/cool.1
+            upstream_repo: https://github.com/tester-org-1/tester-repo
+            upstream_master: main
+  
     runs-on: ubuntu-latest
     env:
       GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }} 
       # The fork repo provided needs to be in the {owner}/{repo} format
-      FORK_REPO: yusuf-musleh/tester-repo  # TODO: do not hardcode
-      UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
-      FORK_RELEASE: open-release/cool.1
-      UPSTREAM_MASTER: main
+#       FORK_REPO: yusuf-musleh/tester-repo  # TODO: do not hardcode
+#       FORK_RELEASE: open-release/cool.1
+#       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
+#       UPSTREAM_MASTER: main
 
     steps:
       - name: Get and store current datetime stamp
@@ -28,37 +37,37 @@ jobs:
       - name: Checkout Forked Repo
         uses: actions/checkout@v3
         with:
-          repository: ${{ env.FORK_REPO }}
+          repository: ${{ matrix.fork_repo }}
           token: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
-          ref: ${{ env.FORK_RELEASE }}
+          ref: ${{ matrix.fork_release }}
       - name: Add Remote Upstream
-        run: git remote add upstream $UPSTREAM_REPO
+        run: git remote add upstream ${{ matrix.upstream_repo }}
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
-        run: git checkout -b sync-$UPSTREAM_MASTER-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/$UPSTREAM_MASTER
+        run: git checkout -b sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/${{ matrix.upstream_master }}
       - name: Push new branch to Fork
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
         run: >
           gh pr create
-          --repo $FORK_REPO
-          --base $FORK_RELEASE
+          --repo ${{ matrix.fork_repo }}
+          --base ${{ matrix.fork_release }}
           --head $(git branch --show-current)
-          --title "Sync $FORK_RELEASE with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
+          --title "Sync ${{ matrix.fork_release }} with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
           --body '
-          Syncing ${{ env.FORK_RELEASE }} with Upstream
+          Syncing ${{ matrix.fork_release }} with Upstream
 
           ## Conflicts ⚠️ 
           
           In cases of conflicts you can go ahead and resolve it here on Github if it is simple enough.
           However if it is a more complicated conflict please follow the steps below:
 
-            1. Check out `sync-${{ env.UPSTREAM_MASTER }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` locally:
-            2. Pull latest changes from `${{ env.FORK_RELEASE }}` into that branch, make sure your `[REMOTE]` is pointing to this repo:
+            1. Check out `sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` locally:
+            2. Pull latest changes from `${{ matrix.fork_release }}` into that branch, make sure your `[REMOTE]` is pointing to this repo:
             ```sh
-            git pull [REMOTE] ${{ env.FORK_RELEASE }}
+            git pull [REMOTE] ${{ matrix.fork_release }}
             ```
             3. Resolve the conflicts locally then commit the result, this will create a new merge commit
-            4. Push the new merge commit to `sync-${{ env.UPSTREAM_MASTER }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` to update this PR
+            4. Push the new merge commit to `sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` to update this PR
             5. Review the PR again and merge when ready!'
