@@ -32,6 +32,9 @@ jobs:
       - name: Get and store current datetime stamp
         id: current-datetime-stamp
         run: echo "DATE_TIME_STAMP=$(date +'%Y%m%d-%s')" >> "$GITHUB_OUTPUT"
+      - name: Construct and store sync branch name
+        id: sync-branch
+        run: echo "SYNC_BRANCH=sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}" >> "$GITHUB_OUTPUT"
       - name: Configure git to use GitHub Cli for credentials
         run: gh auth setup-git -h github.com
       - name: Checkout Forked Repo
@@ -45,10 +48,16 @@ jobs:
       - name: Fetch Latest from Upstream
         run: git fetch upstream
       - name: Create a new branch off Upstream master
-        run: git checkout -b sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }} upstream/${{ matrix.upstream_master }}
+        run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_master }}
+      - name: Check for changes Upstream
+        id: check-sync-required
+#         run: if [[ $(git log origin/${{ steps.sync-branch-outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
+        run: echo "SYNC_REQUIRED=git log origin/sync-main-20230712-1689160244 ^origin/open-release/cool.2 | grep ." >> "$GITHUB_OUPUT"
       - name: Push new branch to Fork
+        if: ${{ steps.check-sync-required.SYNC_REQUIRED }}
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
+        if: ${{ steps.check-sync-required.SYNC_REQUIRED }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
