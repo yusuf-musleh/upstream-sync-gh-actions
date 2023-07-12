@@ -2,8 +2,8 @@ name: Sync with Upstream
 
 # Controls when the workflow will run
 on:
-  schedule:
-    - cron: '0 0 * * 1'  # Runs every Monday 00:00 UTC
+#   schedule:
+#     - cron: '0 0 * * 1'  # Runs every Monday 00:00 UTC
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
@@ -46,4 +46,18 @@ jobs:
           --base $FORK_RELEASE
           --head $(git branch --show-current)
           --title "Sync $FORK_RELEASE with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
-          --body "Syncing $FORK_RELEASE with Upstream"
+          --body '
+              Syncing $FORK_RELEASE with Upstream
+
+              ## Conflicts ⚠️ 
+              In cases of conflicts you can either go ahead and resolve it here on Github UIs if it is simple enough.
+              However if it is a more complicated conflict please follow the following steps:
+
+                1. Check out `sync-$UPSTREAM_MASTER-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` locally:
+                2. Pull latest changes from `$FORK_RELEASE` into that branch, make sure your `[REMOTE]` is pointing to this repo:
+                ```sh
+                git pull [REMOTE] $FORK_RELEASE
+                ```
+                3. Resolve the conflicts locally then commit the result, this will create a new merge commit
+                4. Push the new merge commit to `sync-$UPSTREAM_MASTER-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` to update this PR
+                5. Review the PR again and merge when ready!'
