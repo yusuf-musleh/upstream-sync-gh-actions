@@ -78,5 +78,5 @@ jobs:
             git pull [REMOTE] ${{ matrix.fork_release }}
             ```
             3. Resolve the conflicts locally then commit the result, this will create a new merge commit
-            4. Push the new merge commit to `sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` to update this PR
+            4. Push the new merge commit to `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` to update this PR
             5. Review the PR again and merge when ready!'
