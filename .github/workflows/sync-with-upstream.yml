@@ -49,16 +49,16 @@ jobs:
         run: git fetch upstream
       - name: Create a new branch off Upstream master
         run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_master }}
-      - name: Git Status
-        run: git status
-      - name: Git log
-        run: git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }}
-      - name: Git diff
-        run: git diff ${{ matrix.fork_release }}..
-      - name: Git merge-base
-        run: if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes"; else echo "Needs to create PR"; fi
-      - name: Git Cherry
-        run: git cherry ${{ matrix.fork_release }} ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
+#       - name: Git Status
+#         run: git status
+#       - name: Git log
+#         run: git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }}
+#       - name: Git diff
+#         run: git diff ${{ matrix.fork_release }}..
+#       - name: Git merge-base
+#         run: if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes"; else echo "Needs to create PR"; fi
+#       - name: Git Cherry
+#         run: git cherry ${{ matrix.fork_release }} ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
 #       - name: Check for changes Upstream
 #         id: check-sync-required
 # #         run: if [[ $(git log origin/${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
@@ -73,10 +73,11 @@ jobs:
 # if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi   
       
       - name: Push new branch to Fork
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+        id: create-sync-pr
+#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
@@ -99,3 +100,11 @@ jobs:
             3. Resolve the conflicts locally then commit the result, this will create a new merge commit
             4. Push the new merge commit to `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` to update this PR
             5. Review the PR again and merge when ready!'
+
+      - name:  No changes detected Upstream
+        if: ${{ steps.create-sync-pr.outcome == 'failure' }}
+        run: echo "deleting sync branch"
+        
+      
+      
+      
