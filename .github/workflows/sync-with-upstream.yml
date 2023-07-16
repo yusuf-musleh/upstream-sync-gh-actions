@@ -15,7 +15,7 @@ jobs:
         include:
           # The fork repo provided needs to be in the {owner}/{repo} format
           - fork_repo: yusuf-musleh/tester-repo
-            fork_release: open-release/cool.7
+            fork_release: open-release/cool.8
             upstream_repo: https://github.com/tester-org-1/tester-repo
             upstream_master: main
   
@@ -99,11 +99,7 @@ jobs:
             ```
             3. Resolve the conflicts locally then commit the result, this will create a new merge commit
             4. Push the new merge commit to `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` to update this PR
-            5. Review the PR again and merge when ready!'
-
-      - name:  No changes detected Upstream
-        if: ${{ steps.create-sync-pr.outcome == 'failure' }}
-        run: echo "deleting sync branch"
+            5. Review the PR again and merge when ready!' || echo "No changes detected, should delete sync branch"
         
       
       
