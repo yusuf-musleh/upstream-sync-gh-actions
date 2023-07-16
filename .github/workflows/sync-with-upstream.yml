@@ -54,16 +54,16 @@ jobs:
 #         run: if [[ $(git log origin/${{ steps.sync-branch-outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
 #         run: echo "SYNC_REQUIRED=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true)" >> "$GITHUB_OUTPUT"
         run: |
-          sync_required=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | grep -q . && echo true || echo "")
-          git diff ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }}
+          sync_required=$(git diff ${{ matrix.fork_release }}.. | grep -q . && echo true || echo "")
+          git diff ${{ matrix.fork_release }}..
           echo "sync_required is $sync_required"
           if [[ -n $sync_required ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi
 # if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi
       - name: Push new branch to Fork
-#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
-#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
