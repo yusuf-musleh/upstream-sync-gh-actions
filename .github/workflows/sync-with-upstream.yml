@@ -49,8 +49,8 @@ jobs:
         run: git fetch upstream
       - name: Create a new branch off Upstream master
         run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_master }}
-      - name: Git Config List
-        run: git config --list
+      - name: Git Status
+        run: git status
       - name: Check for changes Upstream
         id: check-sync-required
 #         run: if [[ $(git log origin/${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
