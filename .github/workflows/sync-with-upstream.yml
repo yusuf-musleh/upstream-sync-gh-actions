@@ -99,7 +99,8 @@ jobs:
             ```
             3. Resolve the conflicts locally then commit the result, this will create a new merge commit
             4. Push the new merge commit to `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` to update this PR
-            5. Review the PR again and merge when ready! **Note: Please use the "Create a merge commit" option as it avoids issues when checking diffs with upstream**' ||
+            5. Review the PR again and merge when ready!
+            **Note: Please use the "Create a merge commit" option as it avoids issues when checking diffs with upstream**' ||
             (echo "No changes detected, deleting sync branch..." && git push origin --delete ${{ steps.sync-branch.outputs.SYNC_BRANCH }})
         
       
