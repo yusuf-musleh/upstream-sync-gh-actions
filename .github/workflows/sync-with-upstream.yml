@@ -55,7 +55,7 @@ jobs:
 #         run: echo "SYNC_REQUIRED=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true)" >> "$GITHUB_OUTPUT"
         run: |
           echo "sync_required=$(git diff ${{ matrix.fork_release }}.. | grep -q . && echo true)"
-          if [[ $sync_required == 'true' ]]; then echo "should run the first echo...."; else echo "No new changes. Skipping the next steps..."; fi
+          if [[ 1 == 1 ]]; then echo "should run the first echo...."; else echo "No new changes. Skipping the next steps..."; fi
 # if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi
       - name: Push new branch to Fork
         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
