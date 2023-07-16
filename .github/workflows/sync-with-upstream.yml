@@ -60,7 +60,7 @@ jobs:
       - name: Debugging
         run: |
           echo ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
-          echo ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }} == true
+          if [[${{ steps.check-sync-required.outputs.SYNC_REQUIRED }} == true]]; then echo "it is TRUE!"; else echo "NOT TRUE!"; fi
       
       - name: Push new branch to Fork
         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
