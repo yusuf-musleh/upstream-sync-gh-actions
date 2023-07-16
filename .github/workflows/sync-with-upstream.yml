@@ -56,7 +56,7 @@ jobs:
       - name: Git diff
         run: git diff ${{ matrix.fork_release }}..
       - name: Git merge-base
-        run: git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}
+        run: if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes"; else echo "Needs to create PR"; fi
 #       - name: Check for changes Upstream
 #         id: check-sync-required
 # #         run: if [[ $(git log origin/${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
