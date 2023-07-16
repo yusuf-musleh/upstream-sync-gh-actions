@@ -63,9 +63,7 @@ jobs:
 # if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi   
       - name: Debugging
         run: |
-          echo ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
-          echo ${{ matrix.fork_release }}
-          git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }}
+          git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}
       - name: Push new branch to Fork
         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'true' }}
         run: git push origin
