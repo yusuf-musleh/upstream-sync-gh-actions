@@ -54,7 +54,7 @@ jobs:
 #         run: if [[ $(git log origin/${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
 #         run: echo "SYNC_REQUIRED=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true)" >> "$GITHUB_OUTPUT"
         run: |
-          if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes. Skipping the next steps..."; else echo "SYNC_REQUIRED=true" >> "$GITHUB_OUTPUT"; fi
+          if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes. Skipping the next steps..."; else echo "FAAAILLEDD" && echo "SYNC_REQUIRED=true" >> "$GITHUB_OUTPUT"; fi
 
           
 #          sync_required=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true || echo "")
