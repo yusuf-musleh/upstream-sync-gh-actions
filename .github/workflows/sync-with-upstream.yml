@@ -60,13 +60,13 @@ jobs:
       - name: Debugging
         run: |
           echo ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
-          if [[${{ steps.check-sync-required.outputs.SYNC_REQUIRED }} == true]]; then echo "it is TRUE!"; else echo "NOT TRUE!"; fi
+          if [[${{ steps.check-sync-required.outputs.SYNC_REQUIRED }} == 'true']]; then echo "it is TRUE!"; else echo "NOT TRUE!"; fi
       
       - name: Push new branch to Fork
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'true' }}
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == true }}
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'true' }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
