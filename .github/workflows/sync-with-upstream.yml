@@ -71,10 +71,10 @@ jobs:
 # if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi   
       
       - name: Push new branch to Fork
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
         run: git push origin
       - name: Create PR on Fork with latest changes from Upstream
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
