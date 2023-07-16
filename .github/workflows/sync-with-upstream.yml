@@ -15,7 +15,7 @@ jobs:
         include:
           # The fork repo provided needs to be in the {owner}/{repo} format
           - fork_repo: yusuf-musleh/tester-repo
-            fork_release: open-release/cool.5
+            fork_release: open-release/cool.6
             upstream_repo: https://github.com/tester-org-1/tester-repo
             upstream_master: main
   
