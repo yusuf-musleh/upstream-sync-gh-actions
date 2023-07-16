@@ -15,7 +15,7 @@ jobs:
         include:
           # The fork repo provided needs to be in the {owner}/{repo} format
           - fork_repo: yusuf-musleh/tester-repo
-            fork_release: open-release/cool.4
+            fork_release: open-release/cool.5
             upstream_repo: https://github.com/tester-org-1/tester-repo
             upstream_master: main
   
@@ -56,12 +56,7 @@ jobs:
         run: |
           sync_required=$(git diff ${{ matrix.fork_release }}.. | grep -q . && echo true || echo "")
           if [[ -n $sync_required ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi
-# if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi
-      - name: Debugging
-        run: |
-          echo ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
-          if [[${{ steps.check-sync-required.outputs.SYNC_REQUIRED }} == 'true']]; then echo "it is TRUE!"; else echo "NOT TRUE!"; fi
-      
+# if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi     
       - name: Push new branch to Fork
         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'true' }}
         run: git push origin
