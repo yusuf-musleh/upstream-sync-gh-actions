@@ -1,4 +1,4 @@
-name: Sync with Upstream
+name: Sync with upstream
 
 # Controls when the workflow will run
 on:
@@ -15,94 +15,68 @@ jobs:
         include:
           # The fork repo provided needs to be in the {owner}/{repo} format
           - fork_repo: yusuf-musleh/tester-repo
-            fork_release: open-release/cool.8
+            fork_branch: open-release/cool.8
             upstream_repo: https://github.com/tester-org-1/tester-repo
-            upstream_master: main
-  
+            upstream_branch: main
+
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }} 
-      # The fork repo provided needs to be in the {owner}/{repo} format
-#       FORK_REPO: yusuf-musleh/tester-repo  # TODO: do not hardcode
-#       FORK_RELEASE: open-release/cool.1
-#       UPSTREAM_REPO: https://github.com/tester-org-1/tester-repo  # TODO: do not hardcode
-#       UPSTREAM_MASTER: main
+      GITHUB_TOKEN: ${{ secrets.SYNC_GH_ACTIONS_PAT }}
 
     steps:
       - name: Get and store current datetime stamp
         id: current-datetime-stamp
         run: echo "DATE_TIME_STAMP=$(date +'%Y%m%d-%s')" >> "$GITHUB_OUTPUT"
+
       - name: Construct and store sync branch name
         id: sync-branch
-        run: echo "SYNC_BRANCH=sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}" >> "$GITHUB_OUTPUT"
-      - name: Configure git to use GitHub Cli for credentials
+        run: echo "SYNC_BRANCH=sync-${{ matrix.upstream_branch }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}" >> "$GITHUB_OUTPUT"
+
+      - name: Configure git to use GitHub CLI for credentials
         run: gh auth setup-git -h github.com
+
       - name: Checkout Forked Repo
         uses: actions/checkout@v3
         with:
           repository: ${{ matrix.fork_repo }}
           token: ${{ env.GITHUB_TOKEN }}
-          ref: ${{ matrix.fork_release }}
+
       - name: Add Remote Upstream
         run: git remote add upstream ${{ matrix.upstream_repo }}
+
       - name: Fetch Latest from Upstream
         run: git fetch upstream
-      - name: Create a new branch off Upstream master
-        run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_master }}
-#       - name: Git Status
-#         run: git status
-#       - name: Git log
-#         run: git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }}
-#       - name: Git diff
-#         run: git diff ${{ matrix.fork_release }}..
-#       - name: Git merge-base
-#         run: if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes"; else echo "Needs to create PR"; fi
-#       - name: Git Cherry
-#         run: git cherry ${{ matrix.fork_release }} ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
-#       - name: Check for changes Upstream
-#         id: check-sync-required
-# #         run: if [[ $(git log origin/${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^origin/${{ matrix.fork_release }} | wc -l) -gt 0 ]]; then echo "SHOULD PUSH AND CREATE PR"; else echo "DO NOT PUSH"; fi
-# #         run: echo "SYNC_REQUIRED=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true)" >> "$GITHUB_OUTPUT"
-#         run: |
-#           if git merge-base --is-ancestor ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ${{ matrix.fork_release }}; then echo "No new changes. Skipping the next steps..."; else echo "FAAAILLEDD" && echo "SYNC_REQUIRED=true" >> "$GITHUB_OUTPUT"; fi
 
-          
-#          sync_required=$(git log ${{ steps.sync-branch.outputs.SYNC_BRANCH }} ^${{ matrix.fork_release }} | grep -q . && echo true || echo "")
-#          if [[ -n $sync_required ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi                    
-          
-# if [[ $sync_required == true ]]; then echo "SYNC_REQUIRED=$sync_required" >> "$GITHUB_OUTPUT"; else echo "No new changes. Skipping the next steps..."; fi   
-      
+      - name: Create a new branch off Upstream master
+        run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_branch }}
+
       - name: Push new branch to Fork
-#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
         run: git push origin
-      - name: Create PR on Fork with latest changes from Upstream
-        id: create-sync-pr
-#         if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED == 'lololol' }}
+
+      - name: Create PR on Fork with latest changes (if any) from Upstream
+        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
-          --base ${{ matrix.fork_release }}
+          --base ${{ matrix.fork_branch }}
           --head $(git branch --show-current)
-          --title "Sync ${{ matrix.fork_release }} with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
+          --title "Sync ${{ matrix.fork_branch }} with Upstream ${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}"
           --body '
-          Syncing ${{ matrix.fork_release }} with Upstream
+          Syncing ${{ matrix.fork_branch }} with Upstream
 
-          ## Conflicts ⚠️ 
-          
+          ## Note on Conflicts ⚠️
+
           In cases of conflicts you can go ahead and resolve it here on Github if it is simple enough.
           However if it is a more complicated conflict please follow the steps below:
 
-            1. Check out `sync-${{ matrix.upstream_master }}-${{ steps.current-datetime-stamp.outputs.DATE_TIME_STAMP }}` locally:
-            2. Pull latest changes from `${{ matrix.fork_release }}` into that branch, make sure your `[REMOTE]` is pointing to `${{ matrix.fork_release }}`:
+            1. Check out `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` locally:
+            2. Pull latest changes from `${{ matrix.fork_branch }}` into that branch, make sure your `[REMOTE]` is pointing to `${{ matrix.fork_branch }}`:
             ```sh
-            git pull [REMOTE] ${{ matrix.fork_release }}
+            git pull [REMOTE] ${{ matrix.fork_branch }}
             ```
-            3. Resolve the conflicts locally then commit the result, this will create a new merge commit
+            3. Resolve the conflicts locally, then commit the result. This will create a new merge commit.
             4. Push the new merge commit to `${{ steps.sync-branch.outputs.SYNC_BRANCH }}` to update this PR
             5. Review the PR again and merge when ready!
             **Note: Please use the "Create a merge commit" option as it avoids issues when checking diffs with upstream.**' ||
-            (echo "No changes detected, deleting sync branch..." && git push origin --delete ${{ steps.sync-branch.outputs.SYNC_BRANCH }})
-        
-      
-      
-      
+            (echo "No changes detected. Deleting sync branch..." && git push origin --delete ${{ steps.sync-branch.outputs.SYNC_BRANCH }})
