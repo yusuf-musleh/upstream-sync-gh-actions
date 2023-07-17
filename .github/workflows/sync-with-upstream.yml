@@ -51,11 +51,9 @@ jobs:
         run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_branch }}
 
       - name: Push new branch to Fork
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
         run: git push origin
 
       - name: Create PR on Fork with latest changes (if any) from Upstream
-        if: ${{ steps.check-sync-required.outputs.SYNC_REQUIRED }}
         run: >
           gh pr create
           --repo ${{ matrix.fork_repo }}
