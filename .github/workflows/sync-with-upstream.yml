@@ -48,7 +48,7 @@ jobs:
         run: git remote set-url --add --push origin https://${{ env.GITHUB_TOKEN }}@github.com/${{ matrix.fork_repo }} && git remote -v
 
       - name: Push new branch to Fork
-        run: git push --set-upstream origin ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
+        run: git push -v --set-upstream origin ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
 
       - name: Create PR on Fork with latest changes (if any) from Upstream
         run: >
