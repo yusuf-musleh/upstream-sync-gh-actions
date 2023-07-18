@@ -45,7 +45,7 @@ jobs:
         run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
 
       - name: Set Remote Origin to Fork
-        run: git remote remove origin && git remote set-url --push origin https://${{ env.GITHUB_TOKEN }}@github.com/${{ matrix.fork_repo }}
+        run: git remote remove origin && git remote add origin https://${{ env.GITHUB_TOKEN }}@github.com/${{ matrix.fork_repo }}
 
       - name: Push new branch to Fork
         run: git push --set-upstream origin ${{ steps.sync-branch.outputs.SYNC_BRANCH }}
