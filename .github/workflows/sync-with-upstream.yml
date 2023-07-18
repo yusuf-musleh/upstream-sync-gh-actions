@@ -45,7 +45,7 @@ jobs:
         run: git remote add upstream ${{ matrix.upstream_repo }}
 
       - name: Fetch Latest from Upstream
-        run: git fetch upstream
+        run: git fetch upstream ${{ matrix.upstream_branch }}
 
       - name: Create a new branch off Upstream master
         run: git checkout -b ${{ steps.sync-branch.outputs.SYNC_BRANCH }} upstream/${{ matrix.upstream_branch }}
