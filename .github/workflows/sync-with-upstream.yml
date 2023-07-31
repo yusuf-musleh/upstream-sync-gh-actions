@@ -62,6 +62,7 @@ jobs:
           Syncing ${{ matrix.fork_branch }} with Upstream
 
           ## Important❗
+
           Please always use the **"Create a merge commit"** option as it avoids issues when checking diffs with upstream.
 
           ## Note on Conflicts ⚠️
